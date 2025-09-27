@@ -13,7 +13,12 @@ const userSchema = new mongoose.Schema({
     password: {
         type: String,
         required: true,
-    }
+    },
+    avatar: {
+    type: String,
+    required: false,
+    default: "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp",
+  },
 });
 
 const User = mongoose.model("user", userSchema);

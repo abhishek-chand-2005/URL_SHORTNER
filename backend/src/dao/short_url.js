@@ -26,30 +26,3 @@ export const getShortUrl = async (shortUrl) => {
 export const getCustomShortUrl = async (slug) => {
     return await urlSchema.findOne({short_url:slug});
 }
-
-
-
-
-
-// import urlSchema from "../config/models/short_url.model.js";
-
-// export const saveShortUrl = async (shortUrl, longUrl, userId)=>{
-     
-//     try{
-//             const newUrl = await new urlSchema({
-//             full_url: longUrl,
-//             short_url: shortUrl
-//             }); 
-
-//         if(userId){
-//             newUrl.userId = userId
-//         }
-//         await newUrl.save();
-//     }catch(err){
-//         throw err;
-//     }
-// }
-
-// export const getShortUrl = async (shortUrl) =>{
-//     return await urlSchema.findOneAndUpdate({short_url: shortUrl}, {$inc: {clicks: 1}});
-// }
