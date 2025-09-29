@@ -1,16 +1,35 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
+import { loginUser } from '../apies/user.api.js';
+import {useDispatch, useSelector} from 'react-redux';
+import { login } from '../store/slice/authSlice.js';
+import { useNavigate } from '@tanstack/react-router';
 
 const LoginForm = ({state}) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
+  const auth = useSelector((state) => state.auth)
+  console.log(auth)
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError('');
     // Add login logic here (API call)
+     try {
+            const data = await loginUser(email, password);
+            dispatch(login(data.user))
+            navigate({to:"/dashboard"})
+            setLoading(false);
+            console.log("signin success")
+        } catch (err) {
+            setLoading(false);
+            setError(err.message || 'Login failed. Please check your credentials.');
+        }
     setTimeout(() => {
       setLoading(false);
       // Simulate error for demo

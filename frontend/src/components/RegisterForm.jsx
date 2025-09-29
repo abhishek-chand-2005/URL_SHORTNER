@@ -1,23 +1,39 @@
 import React, { useState } from 'react';
+import { registerUser } from '../apies/user.api.js';
+import { useDispatch } from 'react-redux';
+import { login } from '../store/slice/authSlice';
+import { useNavigate } from '@tanstack/react-router';
 
 const RegisterForm = ({state}) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [name, setName] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError('');
     setSuccess('');
-    if (password !== confirmPassword) {
-      setError('Passwords do not match');
-      setLoading(false);
+     if (password.length < 6) {
+      setError('Password must be at least 6 characters long');
       return;
     }
     // Add register logic here (API call)
+    try {
+      const data = await registerUser(name, email, password);
+      setLoading(false);
+      dispatch(login(data.user))
+      navigate({to:"/dashboard"})
+      setLoading(false);
+    } catch (err) {
+      setLoading(false);
+      setError(err.message || 'Registration failed. Please try again.');
+    }
     setTimeout(() => {
       setLoading(false);
       setSuccess('Account created successfully!');
@@ -28,6 +44,14 @@ const RegisterForm = ({state}) => {
     <div className="flex flex-col items-center justify-center min-h-screen bg-green-50">
       <form onSubmit={handleSubmit} className="bg-white p-6 rounded shadow-md w-full max-w-sm flex flex-col gap-4">
         <h2 className="text-2xl font-bold text-green-700 mb-2 text-center">Register</h2>
+          <input
+            type="text"
+            placeholder="Name"
+            value={name}
+            onChange={e => setName(e.target.value)}
+            className="border border-green-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-400"
+            required
+          />
         <input
           type="email"
           placeholder="Email"
